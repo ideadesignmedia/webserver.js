@@ -4,7 +4,8 @@ const app = express()
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const sanitize = require('sanitize')
-
+const recordVisit = require('./visits.js')
+const saveError = require('./saveError.js')
 /* Additional Dependencies & Middleware Functions */
 
 app.set('trust proxy', true)
@@ -19,8 +20,10 @@ app.all('*', (req, res, next) => {
     next()
 })
 app.options('*', (req, res) => res.status(200).json({ methods: 'PUT, GET, POST, DELETE, OPTIONS' }))
-app.use(sanitize.middleware);
-
+app.use(sanitize.middleware, recordVisit);
+app.get('/', (req, res) => {
+    res.status(200).json({error: false, message: 'Hello'})
+})
 /* Routes */
 
 app.use((req, res, next) => {

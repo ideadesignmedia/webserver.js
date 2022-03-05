@@ -21,6 +21,7 @@ app.all('*', (req, res, next) => {
 })
 app.options('*', (req, res) => res.status(200).json({ methods: 'PUT, GET, POST, DELETE, OPTIONS' }))
 app.use(sanitize.middleware, recordVisit);
+
 app.get('/', (req, res) => {
     res.status(200).json({error: false, message: 'Hello'})
 })
@@ -37,3 +38,5 @@ app.use((error, req, res, next) => {
 });
 const server = http.createServer(app)
 server.listen(process.env.PORT || 3000)
+process.on('uncaughtException', saveError)
+process.on('unhandledRejection', saveError)
